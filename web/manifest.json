@@ -1,6 +1,6 @@
 {
-    "name": "graphql_flutter",
-    "short_name": "graphql_flutter",
+    "name": "flutter_graphql_tutorial",
+    "short_name": "flutter_graphql_tutorial",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

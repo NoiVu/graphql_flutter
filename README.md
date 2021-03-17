@@ -1,4 +1,4 @@
-# graphql_flutter
+# flutter_graphql_tutorial
 
 A new Flutter project.
 
