@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_graphql_tutorial/graphQLConf.dart';
@@ -9,25 +7,31 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 class AlertDialogWindow extends StatefulWidget {
   final Person person;
+
   final bool isAdd;
 
-  const AlertDialogWindow({Key key, this.person, this.isAdd}) : super(key: key);
+  AlertDialogWindow({Key key, this.person, this.isAdd}) : super(key: key);
 
   @override
-  State<StatefulWidget> createState() {
-    _AlertDialogWindow(this.person, this.isAdd);
-  }
+  State<StatefulWidget> createState() =>
+      _AlertDialogWindow(this.person, this.isAdd);
 }
 
 class _AlertDialogWindow extends State<AlertDialogWindow> {
   TextEditingController txtId = TextEditingController();
+
   TextEditingController txtName = TextEditingController();
+
   TextEditingController txtLastName = TextEditingController();
+
   TextEditingController txtAge = TextEditingController();
+
   GraphQLConfiguration graphQLConfiguration = GraphQLConfiguration();
+
   QueryMutation addMutation = QueryMutation();
 
   final Person person;
+
   final bool isAdd;
 
   _AlertDialogWindow(this.person, this.isAdd);
@@ -35,16 +39,22 @@ class _AlertDialogWindow extends State<AlertDialogWindow> {
   @override
   void initState() {
     super.initState();
+
     if (!this.isAdd) {
       txtId.text = person.getId();
+
       txtName.text = person.getName();
+
       txtLastName.text = person.getLastName();
+
       txtAge.text = person.getAge().toString();
     }
   }
 
   @override
   Widget build(BuildContext context) {
+// TODO: implement build
+
     return AlertDialog(
       title: Text(this.isAdd ? "Add" : "Edit or Delete"),
       content: Container(
@@ -61,7 +71,9 @@ class _AlertDialogWindow extends State<AlertDialogWindow> {
                     controller: txtId,
                     enabled: this.isAdd,
                     decoration: InputDecoration(
-                        icon: Icon(Icons.perm_identity), labelText: "ID"),
+                      icon: Icon(Icons.perm_identity),
+                      labelText: "ID",
+                    ),
                   ),
                 ),
                 Container(
@@ -70,7 +82,9 @@ class _AlertDialogWindow extends State<AlertDialogWindow> {
                     maxLength: 40,
                     controller: txtName,
                     decoration: InputDecoration(
-                        icon: Icon(Icons.text_format), labelText: "Name"),
+                      icon: Icon(Icons.text_format),
+                      labelText: "Name",
+                    ),
                   ),
                 ),
                 Container(
@@ -89,10 +103,9 @@ class _AlertDialogWindow extends State<AlertDialogWindow> {
                   child: TextField(
                     maxLength: 2,
                     controller: txtAge,
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
-                      icon: Icon(Icons.calendar_today),
-                      labelText: "Age",
-                    ),
+                        labelText: "Age", icon: Icon(Icons.calendar_today)),
                   ),
                 ),
               ],
@@ -102,72 +115,72 @@ class _AlertDialogWindow extends State<AlertDialogWindow> {
       ),
       actions: <Widget>[
         FlatButton(
-          onPressed: () => Navigator.of(context).pop(),
           child: Text("Close"),
+          onPressed: () => Navigator.of(context).pop(),
         ),
         !this.isAdd
             ? FlatButton(
-                child: Text("Delete"),
-                onPressed: () async {
-                  GraphQLClient _client = graphQLConfiguration.clientToQuery();
-                  QueryResult result = await _client.mutate(
-                    MutationOptions(
-                      document: addMutation.deletePerson(txtId.text),
-                    ),
-                  );
-                  if (!result.hasException) Navigator.of(context).pop();
-                },
-              )
+          child: Text("Delete"),
+          onPressed: () async {
+            GraphQLClient _client = graphQLConfiguration.clientToQuery();
+            QueryResult result = await _client.mutate(
+              MutationOptions(
+                document: addMutation.deletePerson(txtId.text),
+              ),
+            );
+            if (!result.hasException) Navigator.of(context).pop();
+          },
+        )
             : null,
         FlatButton(
-            child: Text(this.isAdd ? "Add" : "Edit"),
-            onPressed: () async {
-              if (txtId.text.isNotEmpty &&
-                  txtName.text.isNotEmpty &&
-                  txtLastName.text.isNotEmpty &&
-                  txtAge.text.isNotEmpty) {
-                if (this.isAdd) {
-                  GraphQLClient _client = graphQLConfiguration.clientToQuery();
-                  QueryResult result = await _client.mutate(
-                    MutationOptions(
-                      document: addMutation.addPerson(
-                        txtId.text,
-                        txtName.text,
-                        txtLastName.text,
-                        int.parse(txtAge.text),
-                      ),
+          child: Text(this.isAdd ? "Add" : "Edit"),
+          onPressed: () async {
+            if (txtId.text.isNotEmpty &&
+                txtName.text.isNotEmpty &&
+                txtLastName.text.isNotEmpty &&
+                txtAge.text.isNotEmpty) {
+              if (this.isAdd) {
+                GraphQLClient _client = graphQLConfiguration.clientToQuery();
+                QueryResult result = await _client.mutate(
+                  MutationOptions(
+                    document: addMutation.addPerson(
+                      txtId.text,
+                      txtName.text,
+                      txtLastName.text,
+                      int.parse(txtAge.text),
                     ),
-                  );
-                  if (!result.hasException) {
-                    txtId.clear();
-                    txtName.clear();
-                    txtLastName.clear();
-                    txtAge.clear();
-                    Navigator.of(context).pop();
-                  }
-                } else {
-                  GraphQLClient _client = graphQLConfiguration.clientToQuery();
-                  QueryResult result = await _client.mutate(
-                    MutationOptions(
-                      document:
-                        addMutation.editPerson(
-                          txtId.text,
-                          txtName.text,
-                          txtLastName.text,
-                          int.parse(txtAge.text),
-                        ),
-                      ),
-                  );
-                  if (!result.hasException) {
-                    txtId.clear();
-                    txtName.clear();
-                    txtLastName.clear();
-                    txtAge.clear();
-                    Navigator.of(context).pop();
-                  }
+                  ),
+                );
+                if (!result.hasException) {
+                  txtId.clear();
+                  txtName.clear();
+                  txtLastName.clear();
+                  txtAge.clear();
+                  Navigator.of(context).pop();
+                }
+              } else {
+                GraphQLClient _client = graphQLConfiguration.clientToQuery();
+                QueryResult result = await _client.mutate(
+                  MutationOptions(
+                    document: addMutation.editPerson(
+                      txtId.text,
+                      txtName.text,
+                      txtLastName.text,
+                      int.parse(txtAge.text),
+                    ),
+                  ),
+                );
+                if (!result.hasException) {
+                  txtId.clear();
+                  txtName.clear();
+                  txtLastName.clear();
+                  txtAge.clear();
+                  Navigator.of(context).pop();
                 }
               }
-            }),
+            }
+          },
+        )
       ],
     );
   }
